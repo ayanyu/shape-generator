@@ -15,6 +15,8 @@
         height: 3rem;
       }
 
+
+
       #container {
         height: 100vh;
         display: flex;
@@ -44,11 +46,23 @@
         background-color: dodgerBlue;
         transition: background-color 1s;
       }
+      #amount{
+        font-size: 50%;
+      }
     </style>
     <title>Shape Generator</title>
   </head>
   <body>
-    <h1><a href='index.html'>Shape Generator</a></h1>
+    <h1>
+      <a href='index.html'>Shape Generator</a>
+      <div id="amount">
+        <span id="amountCircles">0</span>
+        <span> shapes and the average is </span>
+        <span id="avgSize"></span>
+        <span id="totalSize"></span>
+      </div>
+    </h1>
+   
     <h2>Todos</h2>
     <ul>
       <li>Create a repo named shape-generator and add this index.html page</li>
@@ -68,7 +82,7 @@
     </ul>
     <a href='https://github.com/FullstackAcademy/shape-generator'>Repo</a>
     <form>
-      <input name='px' value='25'/>
+      <input name='px' value='26' min="26" max="249" type="number"/>
     </form>
     <div id='container'>
     </div>
@@ -77,31 +91,76 @@
       const input = form.querySelector('input');
       const link = document.querySelector('a');
       const container = document.querySelector('#container');
+      //added more variables
+      const heading = document.querySelector('h1');
+      let amountCircles = 0;
+      let totalSize = 0;
+      let avgSize = 0;
+
 
       container.addEventListener('click', (ev)=>{
-        if(!ev.target.id){
-          ev.target.parentNode.removeChild(ev.target);
+        let removeValue;
+        if(ev.target.tagName === "SPAN"){
+          removeValue = parseInt(ev.target.innerText);
+          ev.target.parentNode.remove() 
+        } else {
+          removeValue = parseInt(ev.target.firstChild.innerText)
+          ev.target.parentNode.removeChild(ev.target) 
         }
       });
 
+      //I tried to calculate the numCircles in different function my counter and average isn't working not sure if i should have created a different function
+      const numCircles = size => {
+        amountCircles++;
+        totalSize += size;
+        const totalSize = parseInt(document.querySelector('#totalSize').innerText) - removeValue;
+        const amount = parseInt(document.querySelector('#amountCircles').innerText) - 1;
+        document.querySelector('#amountCircles').innerText = amount.toString();
+        if(amountCircles === 0){
+          document.querySelector('#avgSize').innerText = ' '
+        } else {
+          const average = Math.round(totalSize / amountCircles);
+        }
+        numCircles(Number(input.value));
+
+        }
+        
+
+
       const generateCircle = ()=> {
+       
         const size = `${input.value}px`;
         const circle = document.createElement('div');
         circle.style.width = size;
         circle.style.height = size;
+        //transform to a square or circle randomly
+        if (Math.random() < .10){
+          circle.style.borderRadius="0%"
+          } else {
+          circle.style.borderRadius="50%"
+        }
         container.appendChild(circle);
         const span = document.createElement('span');
         span.innerText = input.value;
         circle.appendChild(span);
-        input.value = 25 + Math.floor(Math.random()*50);
+        input.value = 26 + Math.floor(Math.random()*50);
         window.setTimeout(function(){
           circle.classList.add('blue');
         }, 500);
       };
 
+      
+  
+     
       form.addEventListener('submit', (ev)=> {
         ev.preventDefault();
-        generateCircle();
+        const allCircles = (Number(input.value));
+        if(input.value < 26 && input.value > 249){
+          prompt('Numbers should be between 26 and 249 only!')
+        } else {
+          generateCircle();
+        }
+          
       });
 
       generateCircle();
